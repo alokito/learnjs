@@ -17,7 +17,15 @@ describe("LearnJS", function() {
 			var view = learnjs.problemView('1');
 			expect(view.find('.title').text()).toEqual('Problem #1 Coming Soon!');
 		});
-	});
+    it('has a paragraph that includes the problem description', function(){
+      var view = learnjs.problemView('1');
+      expect(view.find('p').text()).toEqual(learnjs.problems[0].description);
+    });
+    it('has a code that includes the problem code', function(){
+      var view = learnjs.problemView('1');
+      expect(view.find('code').text()).toEqual(learnjs.problems[0].code);
+    });
+  });
 	it('invokes the router when loaded', function(){
 		spyOn(learnjs, 'showView');
 		learnjs.appOnReady();

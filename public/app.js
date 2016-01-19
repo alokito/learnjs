@@ -1,5 +1,25 @@
 'use strict';
 var learnjs = {};
+learnjs.problems = [
+  {
+    description: "What is truth?",
+    code: "function problem() { return __; }"
+  },
+  {
+    description: "Simple Math",
+    code: "function problem() { return 42 === 6 * __; }"
+  },
+  {
+    description: "Object Access",
+    code: "function problem() { var foo = {a : 11}; return foo.a === __; }"
+  },
+
+];
+learnjs.applyObject = function(obj, $el) {
+  for (var key in obj) {
+    $el.find('[data-name="' + key + '"]').text(obj[key]);
+  }
+}
 learnjs.problemView = function(problemNumber) {
 	var view = $('.templates .problem-view').clone();
     view.find('.title').text('Problem #'+problemNumber+' Coming Soon!');
