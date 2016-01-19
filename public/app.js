@@ -1,7 +1,9 @@
 'use strict';
 var learnjs = {};
 learnjs.problemView = function(problemNumber) {
-	return $('<div class="problem-view">').text('Problem #'+problemNumber+' Coming Soon!');
+	var view = $('.templates .problem-view').clone();
+    view.find('.title').text('Problem #'+problemNumber+' Coming Soon!');
+    return view;
 }
 learnjs.showView = function(hash) {
 	var routes = {
