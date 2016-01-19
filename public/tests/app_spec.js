@@ -15,7 +15,7 @@ describe("LearnJS", function() {
 	describe('problem view', function(){
 		it('has a title that includes the problem number', function(){
 			var view = learnjs.problemView('1');
-			expect(view.find('.title').text()).toEqual('Problem #1 Coming Soon!');
+			expect(view.find('.title').text()).toEqual('Problem #1');
 		});
     it('has a paragraph that includes the problem description', function(){
       var view = learnjs.problemView('1');
