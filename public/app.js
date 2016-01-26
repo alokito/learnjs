@@ -15,6 +15,9 @@ learnjs.problems = [
   },
 
 ];
+learnjs.triggerEvent = function(evt, args) {
+  $('.view-container>*').trigger(evt, args);
+}
 learnjs.flashElement = function($el, content){
   $el.fadeOut('fast', function (){
     $el.html(content);
@@ -66,8 +69,16 @@ learnjs.problemView = function(data) {
   view.find('.check-btn').click(checkAnswerClick);
   view.find('.title').text('Problem #'+problemNumber);
   learnjs.applyObject(problemData, view);
+  if (problemNumber < learnjs.problems.length) {
+    var buttonItem = learnjs.template('skip-btn');
+    buttonItem.find('a').attr('href', '#problem-' + (problemNumber+1));
+    $('.nav-list').append(buttonItem);
+    view.bind('removingView', function(){
+      buttonItem.remove();
+    });
+  }
 
-  return view;
+    return view;
 }
 learnjs.showView = function(hash) {
 	var routes = {
@@ -78,8 +89,10 @@ learnjs.showView = function(hash) {
 	var hashParts = hash.split('-');
 	var viewFn = routes[hashParts[0]];
 	if (viewFn) {
+    learnjs.triggerEvent('removingView', []);
 		$('.view-container').empty().append(viewFn(hashParts[1]));
 	}
+
 };
 learnjs.appOnReady = function() {
 	function showHashView(){
