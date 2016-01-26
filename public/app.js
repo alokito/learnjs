@@ -15,6 +15,12 @@ learnjs.problems = [
   },
 
 ];
+learnjs.flashElement = function($el, content){
+  $el.fadeOut('fast', function (){
+    $el.html(content);
+    $el.fadeIn();
+  });
+};
 learnjs.applyObject = function(obj, $el) {
   for (var key in obj) {
     $el.find('[data-name="' + key + '"]').text(obj[key]);
@@ -35,11 +41,7 @@ learnjs.problemView = function(data) {
     }
   }
   function checkAnswerClick() {
-    if (checkAnswer()) {
-      resultFlash.text('Correct!');
-    } else {
-      resultFlash.text('Incorrect!');
-    }
+    learnjs.flashElement(resultFlash, checkAnswer()?'Correct!':'Incorrect!');
     return false;
   }
 
