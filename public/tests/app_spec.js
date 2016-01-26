@@ -26,14 +26,15 @@ describe("LearnJS", function() {
       expect(view.find('code').text()).toEqual(learnjs.problems[0].code);
     });
     describe('answer section', function() {
-      var view = learnjs.problemView('1');
       it('can check a correct answer by hitting a button', function() {
-        view.find('answer').val('true');
+        var view = learnjs.problemView('1');
+        view.find('.answer').val('true');
         view.find('.check-btn').click();
-        expect(view.find('.result').text()).toEqual('Correct!');
+        expect(view.find('.result').text()).toContain('Correct!');
       });
       it('rejects an incorrect answer', function() {
-        view.find('answer').val('false');
+        var view = learnjs.problemView('1');
+        view.find('.answer').val('false');
         view.find('.check-btn').click();
         expect(view.find('.result').text()).toEqual('Incorrect!');
       });
@@ -50,4 +51,14 @@ describe("LearnJS", function() {
 		$(window).trigger('hashchange');
 		expect(learnjs.showView).toHaveBeenCalledWith(window.location.hash);
 	});
+  describe('buildCorrectFlash', function(){
+    it('returns a link to the next problem', function(){
+      var correct = learnjs.buildCorrectFlash(0);
+      expect(correct.find('a').attr('href')).toEqual('#problem-1');
+    });
+    it('wraps to beginning', function(){
+      var correct = learnjs.buildCorrectFlash(learnjs.problems.length-1);
+      expect(correct.find('a').attr('href')).toEqual('');
+    });
+  });
 });
