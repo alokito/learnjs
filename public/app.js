@@ -101,3 +101,6 @@ learnjs.appOnReady = function() {
 	$(window).on('hashchange', showHashView);
 	showHashView();
 };
+function googleSignIn() {
+  console.log(arguments);
+}
