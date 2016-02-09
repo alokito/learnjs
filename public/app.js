@@ -82,7 +82,8 @@ learnjs.problemView = function(data) {
 }
 learnjs.showView = function(hash) {
 	var routes = {
-		"#problem": learnjs.problemView,
+    "#problem": learnjs.problemView,
+    "#profile": learnjs.profileView,
     '#': learnjs.landingView,
     '': learnjs.landingView
 	};
@@ -100,6 +101,7 @@ learnjs.appOnReady = function() {
 	}
 	$(window).on('hashchange', showHashView);
 	showHashView();
+  learnjs.identity.then(learnjs.addProfileLink);
 };
 
 learnjs.awsRefresh = function() {
@@ -110,11 +112,27 @@ learnjs.awsRefresh = function() {
     } else {
       deferred.resolve(AWS.config.credentials.identityId);
     }
-    return deferred.promise();
   });
+  return deferred.promise();
 };
 
+learnjs.addProfileLink = function(profile) {
+  var link = learnjs.template('profile-link');
+  link.find('a').text(profile.email);
+  $('.signin-bar').prepend(link);
+}
+
+
 learnjs.identity = new $.Deferred();
+
+
+learnjs.profileView = function() {
+  var view = learnjs.template('profile-view');
+  learnjs.identity.done(function(identity) {
+    view.find('.email').text(identity.email);
+  });
+  return view;
+}
 
 function googleSignIn(googleUser) {
 
