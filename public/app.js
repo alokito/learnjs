@@ -49,6 +49,7 @@ learnjs.landingView = function(){
 learnjs.problemView = function(data) {
 	var problemNumber = parseInt(data, 10);
   var view = learnjs.template('problem-view');
+  var answer = view.find('.answer');
   var problemData = learnjs.problems[problemNumber-1];
   var resultFlash = view.find('.result');
   function checkAnswer(answer) {
@@ -61,11 +62,10 @@ learnjs.problemView = function(data) {
   }
   function checkAnswerClick() {
     var correctContent = learnjs.buildCorrectFlash(problemNumber);
-    var answer = view.find('.answer').val();
-    var checked  = checkAnswer(answer);
+    var checked  = checkAnswer(answer.val());
     learnjs.flashElement(resultFlash, checked?correctContent:'Incorrect!');
     if (checked) {
-      learnjs.saveAnswer(problemNumber, answer);
+      learnjs.saveAnswer(problemNumber, answer.val());
     }
     return false;
   }
@@ -81,8 +81,14 @@ learnjs.problemView = function(data) {
       buttonItem.remove();
     });
   }
-
-    return view;
+  learnjs.fetchAnswer(problemNumber).then(function(data) {
+    if (data.Item) {
+      answer.val(data.Item.answer);
+    }
+  }, function(p) {
+    window.alert('p: ' + p);
+  });
+  return view;
 }
 learnjs.showView = function(hash) {
 	var routes = {
@@ -225,3 +231,24 @@ learnjs.saveAnswer = function(problemId, answer) {
     });
   });
 };
+
+learnjs.fetchAnswer = function(problemId) {
+  var def = new $.Deferred();
+
+  learnjs.identity.then(function(identity) {
+    var db = new AWS.DynamoDB.DocumentClient();
+    var item = {
+      TableName: "SALDAAL1-learnjs",
+      Key: {
+        userId: identity.id,
+        problemId: problemId
+      }
+    };
+    learnjs.sendDbRequest(db.get(item), function(){
+      return learnjs.fetchAnswer(problemId);
+    }).then(function(r ){
+      def.resolve(r);
+    }, def.reject);
+  }, def.reject);
+  return def;
+}
