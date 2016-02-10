@@ -88,6 +88,11 @@ learnjs.problemView = function(data) {
   }, function(p) {
     window.alert('p: ' + p);
   });
+  learnjs.countAnswers(problemNumber).then(function(data){
+    view.find('.answerCount').text("Answered by " + data.Count +" users");
+  }, function(p) {
+    window.alert('p: ' + p);
+  });
   return view;
 }
 learnjs.showView = function(hash) {
@@ -250,5 +255,22 @@ learnjs.fetchAnswer = function(problemId) {
       def.resolve(r);
     }, def.reject);
   }, def.reject);
+  return def;
+}
+
+learnjs.countAnswers = function(problemId) {
+  var def = new $.Deferred();
+  learnjs.identity.then(function(identity) {
+    var db = new AWS.DynamoDB.DocumentClient();
+    var params = {
+      TableName: 'SALDAAL1-learnjs',
+      Select: 'COUNT',
+      FilterExpression: 'problemId = :problemId',
+      ExpressionAttributeValues: {':problemId': problemId}
+    };
+    learnjs.sendDbRequest(db.scan(params), function() {
+      return learnjs.countAnswers(problemId);
+    }).then(def.resolve, def.reject);
+  });
   return def;
 }
