@@ -54,7 +54,8 @@
             </ul>
             <div class="four columns signin-bar">
                 <span class="navbar-padding u-pull-right">
-                    <span class="g-signin2" data-onsuccess="googleSignIn"></span>
+                    <span class="g-signin2" data-onsuccess="googleSignIn"
+                          data-onfailure="googleFail"></span>
                 </span>
             </div>
         </div>
@@ -91,6 +92,7 @@
         </div>
         <span class="profile-link">
             <a href="#profile"><span class="email"></span></a>
+            <a href="#" onclick="googleSignOut();">Sign out</a>
         </span>
         <div class="correct-flash">
             <span>Correct!</span> <a>Next Problem</a>

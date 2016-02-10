@@ -118,7 +118,7 @@ learnjs.awsRefresh = function() {
 
 learnjs.addProfileLink = function(profile) {
   var link = learnjs.template('profile-link');
-  link.find('a').text(profile.email);
+  link.find('.email').text(profile.email);
   $('.signin-bar').prepend(link);
 }
 
@@ -132,6 +132,20 @@ learnjs.profileView = function() {
     view.find('.email').text(identity.email);
   });
   return view;
+}
+
+function googleFail() {
+  learnjs.awsRefresh();
+  window.alert("Denied!");
+}
+
+function googleSignOut() {
+  var auth2 = gapi.auth2.getAuthInstance();
+  auth2.signOut().then(function () {
+    learnjs.awsRefresh();
+    console.log('User signed out.');
+  });
+  return false;
 }
 
 function googleSignIn(googleUser) {
