@@ -60,6 +60,16 @@ learnjs.problemView = function(data) {
       return false;
     }
   }
+  function escapeHTML(s) {
+    return s.replace(/[&"<>]/g, function (c) {
+      return {
+        '&': "&amp;",
+        '"': "&quot;",
+        '<': "&lt;",
+        '>': "&gt;"
+      }[c];
+    });
+  }
   function checkAnswerClick() {
     var correctContent = learnjs.buildCorrectFlash(problemNumber);
     var checked  = checkAnswer(answer.val());
@@ -72,7 +82,7 @@ learnjs.problemView = function(data) {
           var table = "Popular Answers:<table><tr><th>Answer</th><th>Count</th></tr>"
           for (var i = 0; i < payload.length; i++) {
             var a = payload[i];
-            table += "<tr><td>"+ a.text+"</td><td>" + a.count +"</td></tr>";
+            table += "<tr><td>"+ escapeHTML(a.text)+"</td><td>" + a.count +"</td></tr>";
           }
           table += "</table>";
           var $d = view.find('.popularAnswers').append(table);
