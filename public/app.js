@@ -52,14 +52,7 @@ learnjs.problemView = function(data) {
   var answer = view.find('.answer');
   var problemData = learnjs.problems[problemNumber-1];
   var resultFlash = view.find('.result');
-  function checkAnswer(answer) {
-    var test = problemData.code.replace('__', answer) + ';problem();';
-    try {
-      return eval(test);
-    } catch(e) {
-      return false;
-    }
-  }
+
   function escapeHTML(s) {
     return s.replace(/[&"<>]/g, function (c) {
       return {
@@ -70,11 +63,25 @@ learnjs.problemView = function(data) {
       }[c];
     });
   }
+  function checkAnswer(answer) {
+    var test = problemData.code.replace('__', answer) + ';problem();';
+    var def = new $.Deferred();
+    var worker = new Worker("worker.js");
+    worker.onmessage = function(e) {
+      if (e.data) {
+        def.resolve(e.data);
+      } else {
+        def.reject();
+      }
+    }
+    worker.postMessage(test);
+    return def;
+  }
+
   function checkAnswerClick() {
-    var correctContent = learnjs.buildCorrectFlash(problemNumber);
-    var checked  = checkAnswer(answer.val());
-    learnjs.flashElement(resultFlash, checked?correctContent:'Incorrect!');
-    if (checked) {
+    checkAnswer(answer.val()).then(function() {
+      var correctContent = learnjs.buildCorrectFlash(problemNumber);
+      learnjs.flashElement(resultFlash, correctContent);
       learnjs.saveAnswer(problemNumber, answer.val());
       learnjs.popularAnswers(problemNumber).then(function(answers) {
         var payload = JSON.parse(answers.Payload);
@@ -88,7 +95,9 @@ learnjs.problemView = function(data) {
           var $d = view.find('.popularAnswers').html(table);
         }
       });
-    }
+    }, function(){
+      learnjs.flashElement(resultFlash, 'Incorrect!');
+    });
     return false;
   }
 
