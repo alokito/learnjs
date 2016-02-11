@@ -85,7 +85,7 @@ learnjs.problemView = function(data) {
             table += "<tr><td>"+ escapeHTML(a.text)+"</td><td>" + a.count +"</td></tr>";
           }
           table += "</table>";
-          var $d = view.find('.popularAnswers').append(table);
+          var $d = view.find('.popularAnswers').html(table);
         }
       });
     }
